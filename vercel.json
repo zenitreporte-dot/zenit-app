@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "app/api/reporte/generar/route.js": {
+      "maxDuration": 60
+    },
+    "app/api/reporte/ver/route.js": {
+      "maxDuration": 30
+    },
+    "app/api/webhook/mercadopago/route.js": {
+      "maxDuration": 60
+    }
+  }
+}

@@ -8,9 +8,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        zenit: {
+          navy: '#1a1b2e',
+          'navy-mid': '#2d2e4a',
+          amber: '#c9a84c',
+          'amber-light': '#e8c97a',
+          cream: '#f5f0e8',
+          'cream-dark': '#ede7d9',
+        }
       },
+      fontFamily: {
+        serif: ['DM Serif Display', 'Georgia', 'serif'],
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+      }
     },
   },
   plugins: [],

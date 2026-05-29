@@ -2,22 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #1a1b2e;
+  --navy-mid: #2d2e4a;
+  --amber: #c9a84c;
+  --amber-light: #e8c97a;
+  --cream: #f5f0e8;
+  --cream-dark: #ede7d9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--navy);
+  color: var(--cream);
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
 @layer utilities {
