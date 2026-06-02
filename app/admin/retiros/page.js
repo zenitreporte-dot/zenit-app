@@ -41,12 +41,19 @@ export default function RetirosPage() {
   async function procesarRetiro(id, accion) {
     setProcesando(id)
     try {
-      await fetch('/api/admin/retiro', {
+      const res = await fetch('/api/admin/retiro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ secret: process.env.NEXT_PUBLIC_ADMIN_SECRET, retiro_id: id, accion }),
       })
+      const data = await res.json()
+      if (!res.ok) {
+        alert(`Error: ${data.error || 'No se pudo procesar'}`)
+        return
+      }
       cargar()
+    } catch (e) {
+      alert('Error de conexión')
     } finally {
       setProcesando(null)
     }

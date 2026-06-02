@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { ZenitIcon } from '@/components/LogoZenit'
+import { ZenitLogo, ZenitIcon } from '@/components/LogoZenit'
 
 function PagoExitosoContent() {
   const searchParams = useSearchParams()
@@ -14,6 +14,24 @@ function PagoExitosoContent() {
   useEffect(() => {
     if (!sessionId) return
 
+    // Disparar generación inmediatamente — no depender del webhook
+    fetch('/api/reporte/generar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          setEstado('listo')
+          setTimeout(() => router.push(`/reporte/${sessionId}`), 1000)
+        }
+      })
+      .catch(() => {
+        // Si el fetch falla por timeout, el polling lo detectará
+      })
+
+    // Polling de respaldo cada 5s para detectar si ya existe
     const intervalo = setInterval(async () => {
       try {
         const res = await fetch(`/api/reporte/estado?session_id=${sessionId}`)
@@ -22,20 +40,20 @@ function PagoExitosoContent() {
         if (data.listo) {
           clearInterval(intervalo)
           setEstado('listo')
-          setTimeout(() => router.push(`/reporte/${sessionId}`), 1500)
+          setTimeout(() => router.push(`/reporte/${sessionId}`), 1000)
           return
         }
       } catch (e) {}
 
       setIntentos(prev => {
         const nuevos = prev + 1
-        if (nuevos > 40) {
+        if (nuevos > 24) { // 2 minutos máximo
           clearInterval(intervalo)
           setEstado('error')
         }
         return nuevos
       })
-    }, 3000)
+    }, 5000)
 
     return () => clearInterval(intervalo)
   }, [sessionId])
@@ -52,13 +70,13 @@ function PagoExitosoContent() {
     <div className="min-h-screen flex items-center justify-center px-6 bg-zenit-navy">
       <div className="text-center max-w-md">
         <div className="flex justify-center mb-8">
-          <ZenitIcon size={28} className="text-zenit-amber opacity-60" />
+          <ZenitIcon size={44} />
         </div>
 
         {estado === 'verificando' && (
           <>
             <div className="w-16 h-16 rounded-full bg-zenit-navy-mid border border-zenit-amber/30 flex items-center justify-center mx-auto mb-6">
-              <ZenitIcon size={32} className="text-zenit-amber" />
+              <span className="w-6 h-6 border-2 border-zenit-amber border-t-transparent rounded-full animate-spin inline-block" />
             </div>
             <h1 className="font-serif text-2xl text-zenit-cream mb-3">
               ¡Pago recibido!
@@ -91,7 +109,7 @@ function PagoExitosoContent() {
         {estado === 'error' && (
           <>
             <div className="w-16 h-16 rounded-full bg-zenit-navy-mid border border-zenit-amber/20 flex items-center justify-center mx-auto mb-6">
-              <ZenitIcon size={28} className="text-zenit-amber/60" />
+              <span className="text-zenit-amber/60 font-serif text-2xl">⏳</span>
             </div>
             <h1 className="font-serif text-2xl text-zenit-cream mb-3">
               Tu reporte está siendo generado

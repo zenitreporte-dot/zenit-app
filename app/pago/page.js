@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ZenitLogo, ZenitIcon } from '@/components/LogoZenit'
+import { ZenitLogo } from '@/components/LogoZenit'
 
 export default function PantallaDePago() {
   const router = useRouter()
@@ -85,8 +85,11 @@ export default function PantallaDePago() {
 
   return (
     <div className="min-h-screen bg-zenit-navy flex flex-col">
-      <header className="px-6 py-5 border-b border-zenit-navy-mid flex items-center gap-3">
-        <ZenitLogo size={22} className="text-zenit-amber" />
+      <header className="px-6 py-5 border-b border-zenit-navy-mid flex items-center justify-between">
+        <ZenitLogo size={32} />
+        <span className="text-xs text-zenit-cream/30 flex items-center gap-1.5">
+          <span>🔒</span> Pago seguro · Mercado Pago
+        </span>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
@@ -101,9 +104,6 @@ export default function PantallaDePago() {
           )}
 
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-zenit-navy-mid border border-zenit-amber/20">
-              <ZenitIcon size={28} className="text-zenit-amber" />
-            </div>
             <h1 className="font-serif text-3xl text-zenit-cream mb-3">¡Tu reporte está listo!</h1>
             <p className="text-zenit-cream/60 text-lg">
               La IA analizó tus 20 respuestas y generó tu reporte personalizado de propósito de vida.
@@ -132,7 +132,7 @@ export default function PantallaDePago() {
               style={{ background: 'linear-gradient(to bottom, rgba(26,27,46,0) 0%, rgba(26,27,46,0.97) 55%)' }}>
               <div className="text-center px-6 pt-24">
                 <div className="w-10 h-10 rounded-xl bg-zenit-navy-mid border border-zenit-amber/20 flex items-center justify-center mx-auto mb-2">
-                  <ZenitIcon size={20} className="text-zenit-amber/60" />
+                  <span className="text-zenit-amber/60 text-xl">🔒</span>
                 </div>
                 <p className="font-serif text-xl text-zenit-cream mb-1">Reporte completo generado</p>
                 <p className="text-zenit-cream/40 text-sm">8 secciones · Análisis personalizado · Hoja de ruta a 180 días</p>
@@ -141,7 +141,7 @@ export default function PantallaDePago() {
           </div>
 
           {/* Lo que incluye */}
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
             {[
               'Tu propósito central',
               'Análisis de 4 dimensiones',
@@ -151,7 +151,7 @@ export default function PantallaDePago() {
               'Hoja de ruta a 180 días',
             ].map((texto) => (
               <div key={texto} className="flex items-center gap-2 bg-zenit-navy-mid rounded-xl p-3">
-                <span className="text-zenit-amber/50 flex-shrink-0">✓</span>
+                <span className="text-zenit-amber flex-shrink-0">✓</span>
                 <p className="text-sm text-zenit-cream/70">{texto}</p>
               </div>
             ))}
@@ -159,13 +159,8 @@ export default function PantallaDePago() {
 
           {/* Precio y CTA */}
           <div className="text-center">
-            <div className="flex items-center justify-center gap-4 mb-4 text-sm text-zenit-cream/30">
-              <span className="line-through">Coaching: $150.000</span>
-              <span>·</span>
-              <span className="line-through">Test profesional: $200.000</span>
-            </div>
             <div className="mb-1">
-              <span className="font-serif text-5xl text-zenit-amber">$25.000</span>
+              <span className="font-serif text-4xl sm:text-5xl text-zenit-amber">$25.000</span>
               <span className="text-zenit-cream/40 ml-2">COP</span>
             </div>
             <p className="text-zenit-cream/40 text-sm mb-6">Pago único · Descarga inmediata en PDF · Tuyo para siempre</p>
@@ -177,7 +172,7 @@ export default function PantallaDePago() {
             )}
 
             <button onClick={handlePagar} disabled={cargandoPago}
-              className="w-full py-5 rounded-2xl text-zenit-navy font-bold text-xl shadow-lg transition-all hover:opacity-90 disabled:opacity-60 bg-zenit-amber">
+              className="w-full py-5 rounded-full text-zenit-navy font-bold text-xl shadow-lg transition-all hover:opacity-90 disabled:opacity-60 bg-zenit-amber">
               {cargandoPago ? (
                 <span className="flex items-center justify-center gap-3">
                   <span className="w-5 h-5 border-2 border-zenit-navy border-t-transparent rounded-full animate-spin" />

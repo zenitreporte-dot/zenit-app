@@ -5,7 +5,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET
+const ADMIN_SECRET = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_SECRET
 
 export const dynamic = 'force-dynamic'
 

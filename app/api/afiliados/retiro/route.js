@@ -10,7 +10,7 @@ import { cookies } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
 
-const MONTO_MINIMO = 10000 // COP
+const MONTO_MINIMO = 50000 // COP — mínimo 5 ventas
 
 export async function POST(request) {
   try {

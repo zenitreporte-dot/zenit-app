@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { ZenitLogo } from '@/components/LogoZenit'
+import { ZenitLogo, ZenitIcon } from '@/components/LogoZenit'
 
 export default function LandingPage() {
   return (
@@ -9,19 +9,29 @@ export default function LandingPage() {
 
       {/* ── NAV ─────────────────────────────────────── */}
       <nav className="sticky top-0 z-50 bg-zenit-navy/90 backdrop-blur border-b border-zenit-navy-mid">
-        <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
-          <ZenitLogo size={24} className="text-zenit-amber" />
-          <Link
-            href="/formulario"
-            className="text-sm font-semibold px-4 py-2 rounded-full text-zenit-navy transition-opacity hover:opacity-90 bg-zenit-amber"
-          >
-            Comenzar →
-          </Link>
+        <div className="max-w-5xl mx-auto px-5 h-14 grid grid-cols-3 items-center">
+          {/* Izquierda — ícono */}
+          <div className="flex items-center">
+            <ZenitIcon size={32} />
+          </div>
+          {/* Centro — nombre */}
+          <div className="flex justify-center">
+            <span className="font-sans font-bold text-xl tracking-wide text-zenit-amber">zenit</span>
+          </div>
+          {/* Derecha — CTA */}
+          <div className="flex justify-end">
+            <Link
+              href="/formulario"
+              className="text-sm font-semibold px-4 py-2 rounded-full text-zenit-navy transition-opacity hover:opacity-90 bg-zenit-amber"
+            >
+              Comenzar →
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* ── HERO ────────────────────────────────────── */}
-      <section className="relative py-24 px-5 text-center overflow-hidden bg-zenit-navy">
+      <section className="relative py-14 sm:py-24 px-5 text-center overflow-hidden bg-zenit-navy">
         <div className="absolute top-[-80px] right-[-80px] w-72 h-72 rounded-full opacity-5 bg-zenit-amber" />
         <div className="absolute bottom-[-60px] left-[-60px] w-56 h-56 rounded-full opacity-5 bg-zenit-amber" />
 
@@ -49,16 +59,8 @@ export default function LandingPage() {
           </Link>
 
           <p className="mt-4 text-zenit-cream/50 text-sm">
-            Descarga inmediata en PDF · Sin suscripción · Tuyo para siempre
+            Descarga inmediata en PDF · Sin suscripción · 100% personalizado
           </p>
-
-          <div className="mt-10 flex items-center justify-center gap-6 text-zenit-cream/50 text-sm flex-wrap">
-            <span>★★★★★ 4.9/5</span>
-            <span className="opacity-40">|</span>
-            <span>+500 reportes generados</span>
-            <span className="opacity-40">|</span>
-            <span>Análisis listo en &lt; 2 min</span>
-          </div>
         </div>
       </section>
 
@@ -107,7 +109,6 @@ export default function LandingPage() {
           </div>
 
           <div className="relative">
-            <div className="hidden sm:block absolute left-8 top-8 bottom-8 w-0.5 bg-zenit-navy-mid" />
             <div className="space-y-6">
               {[
                 {
@@ -131,7 +132,7 @@ export default function LandingPage() {
                     {paso.num}
                   </div>
                   <div className="pt-1">
-                    <h3 className="font-semibold text-lg mb-1 text-zenit-cream">{paso.titulo}</h3>
+                    <h3 className="font-serif text-xl mb-1 text-zenit-cream">{paso.titulo}</h3>
                     <p className="text-zenit-cream/60 text-sm leading-relaxed">{paso.desc}</p>
                   </div>
                 </div>
@@ -240,10 +241,6 @@ export default function LandingPage() {
                 a: 'No. El test está diseñado para cualquier persona. Las preguntas son naturales y conversacionales — no necesitas conocer ninguna metodología.',
               },
               {
-                q: '¿Qué pasa si no quedo satisfecho con mi reporte?',
-                a: 'Si sientes que el reporte no refleja quién eres, escríbenos y lo revisamos. La calidad del reporte depende de qué tan honesto seas en tus respuestas — entre más detallado, más preciso.',
-              },
-              {
                 q: '¿Puedo compartir mi reporte?',
                 a: 'Sí, el PDF es tuyo para siempre. Puedes imprimirlo, compartirlo o guardarlo. Sin restricciones.',
               },
@@ -276,10 +273,14 @@ export default function LandingPage() {
       {/* ── FOOTER ──────────────────────────────────── */}
       <footer className="py-8 px-5 border-t border-zenit-navy-mid">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-zenit-cream/40">
-          <ZenitLogo size={20} className="text-zenit-amber" />
+          <div className="flex items-center gap-2">
+            <ZenitIcon size={24} />
+            <span className="font-sans font-bold text-base text-zenit-amber tracking-wide">zenit</span>
+          </div>
           <div className="flex gap-6">
             <Link href="/formulario" className="hover:text-zenit-cream transition-colors">Hacer el test</Link>
             <a href="mailto:hola@zenit.app" className="hover:text-zenit-cream transition-colors">Contacto</a>
+            <Link href="/afiliados" className="hover:text-zenit-cream transition-colors">Hazte afiliado · 40% de comisión</Link>
             <Link href="/afiliados/login" className="hover:text-zenit-cream transition-colors">Panel de afiliados</Link>
           </div>
         </div>

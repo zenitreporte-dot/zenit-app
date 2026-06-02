@@ -11,10 +11,7 @@ function PagoPendienteContent() {
     <div className="min-h-screen flex items-center justify-center px-6 bg-zenit-navy">
       <div className="text-center max-w-md">
         <div className="flex justify-center mb-6">
-          <ZenitIcon size={26} className="text-zenit-amber opacity-60" />
-        </div>
-        <div className="w-16 h-16 rounded-full bg-zenit-navy-mid border border-zenit-amber/20 flex items-center justify-center mx-auto mb-6">
-          <ZenitIcon size={28} className="text-zenit-amber/60" />
+          <ZenitIcon size={44} />
         </div>
         <h1 className="font-serif text-2xl text-zenit-cream mb-3">
           Pago en proceso
@@ -28,7 +25,7 @@ function PagoPendienteContent() {
         {sessionId && (
           <a
             href={`/reporte/${sessionId}`}
-            className="inline-block px-8 py-4 rounded-2xl text-zenit-navy font-bold bg-zenit-amber"
+            className="inline-block px-8 py-4 rounded-full text-zenit-navy font-bold bg-zenit-amber"
           >
             Verificar estado de mi reporte
           </a>

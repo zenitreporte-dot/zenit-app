@@ -39,8 +39,8 @@ function PantallaGenerando() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-zenit-navy">
       <div className="text-center max-w-md">
-        <div className="w-16 h-16 rounded-full bg-zenit-navy-mid border border-zenit-amber/30 flex items-center justify-center mx-auto mb-8">
-          <ZenitIcon size={32} className="text-zenit-amber" />
+        <div className="flex justify-center mb-8">
+          <ZenitLogo size={40} />
         </div>
 
         <h2 className="font-serif text-zenit-cream text-xl mb-2 transition-all duration-500" key={`t-${mensajeActual}`}>
@@ -54,11 +54,12 @@ function PantallaGenerando() {
           <div className="h-2 rounded-full bg-zenit-amber transition-all duration-1000"
             style={{ width: `${progreso}%` }} />
         </div>
-        <p className="text-zenit-cream/30 text-xs">Este proceso toma entre 10 y 30 segundos</p>
+        <p className="text-zenit-cream/30 text-xs">Este proceso toma entre 20 y 60 segundos</p>
 
         <div className="flex justify-center gap-2 mt-10">
-          {['#c9a84c', '#90aed4', '#8ec48e', '#c9a84c'].map((color, i) => (
-            <div key={i} className="w-2 h-2 rounded-full opacity-60" style={{ backgroundColor: color }} />
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="w-2 h-2 rounded-full bg-zenit-amber"
+              style={{ opacity: i === 0 ? 0.9 : i === 1 ? 0.6 : i === 2 ? 0.4 : 0.2 }} />
           ))}
         </div>
       </div>
@@ -107,15 +108,40 @@ function PaginaReporteContent() {
       return true
     }
 
+    const dispararGeneracion = () => {
+      fetch('/api/reporte/generar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.ok) cargarReporte()
+        })
+        .catch(() => {})
+    }
+
     if (generando) {
+      dispararGeneracion()
       const intervalo = setInterval(async () => {
         const listo = await cargarReporte()
         if (listo) clearInterval(intervalo)
-      }, 3000)
-      setTimeout(() => cargarReporte(), 5000)
+      }, 4000)
+      setTimeout(() => cargarReporte(), 15000)
       return () => clearInterval(intervalo)
     } else {
-      cargarReporte()
+      // Intentar cargar — si no existe, disparar generación y polling
+      cargarReporte().then(listo => {
+        if (!listo) {
+          setGenerando(true)
+          dispararGeneracion()
+          const intervalo = setInterval(async () => {
+            const done = await cargarReporte()
+            if (done) clearInterval(intervalo)
+          }, 4000)
+          setTimeout(() => clearInterval, 120000) // cleanup máximo 2min
+        }
+      })
     }
   }, [session_id, generando])
 
@@ -183,16 +209,21 @@ function PaginaReporteContent() {
 
   return (
     <div className="min-h-screen bg-zenit-navy">
-      <header className="px-6 py-4 border-b border-zenit-navy-mid flex items-center justify-between sticky top-0 bg-zenit-navy z-20 print:hidden">
-        <div className="flex items-center gap-3">
-          <ZenitLogo size={22} className="text-zenit-amber" />
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-zenit-cream/30 hidden sm:block">Reporte personalizado</span>
-          <button onClick={handleDescargarPDF}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-80 bg-zenit-navy-mid text-zenit-amber border border-zenit-amber/20">
-            Descargar PDF
-          </button>
+      <header className="px-6 py-4 border-b border-zenit-navy-mid sticky top-0 bg-zenit-navy z-20 print:hidden">
+        <div className="grid grid-cols-3 items-center">
+          <div className="flex items-center">
+            <ZenitIcon size={28} />
+          </div>
+          <div className="flex justify-center">
+            <span className="font-sans font-bold text-lg tracking-wide text-zenit-amber">zenit</span>
+          </div>
+          <div className="flex justify-end items-center gap-3">
+            <span className="text-xs text-zenit-cream/30 hidden sm:block">Tu reporte</span>
+            <button onClick={handleDescargarPDF}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:opacity-80 bg-zenit-navy-mid text-zenit-amber border border-zenit-amber/20">
+              Descargar PDF
+            </button>
+          </div>
         </div>
       </header>
 
@@ -242,8 +273,8 @@ function PaginaReporteContent() {
             <div className="grid grid-cols-4">
               {[
                 { color: '#c9a84c', nombre: 'Amas' },
-                { color: '#90aed4', nombre: 'Talento' },
-                { color: '#8ec48e', nombre: 'Valor' },
+                { color: '#e8c97a', nombre: 'Talento' },
+                { color: '#f5f0e8', nombre: 'Valor' },
                 { color: '#c9a84c', nombre: 'Impacto' },
               ].map(c => (
                 <div key={c.nombre} className="py-3 text-center border-t border-zenit-amber/10">
@@ -275,9 +306,9 @@ function PaginaReporteContent() {
             <div className="space-y-4">
               <DimensionItem acento="#c9a84c" titulo="Lo que Amas"
                 texto={content.analisis_circulos?.lo_que_amas} />
-              <DimensionItem acento="#90aed4" titulo="En lo que Eres Bueno"
+              <DimensionItem acento="#e8c97a" titulo="En lo que Eres Bueno"
                 texto={content.analisis_circulos?.en_lo_que_eres_bueno} />
-              <DimensionItem acento="#8ec48e" titulo="Por lo que te Pueden Pagar"
+              <DimensionItem acento="#f5f0e8" titulo="Por lo que te Pueden Pagar"
                 texto={content.analisis_circulos?.por_lo_que_te_pueden_pagar} />
               <DimensionItem acento="#c9a84c" titulo="Lo que el Mundo Necesita"
                 texto={content.analisis_circulos?.lo_que_el_mundo_necesita} />
@@ -363,9 +394,9 @@ function PaginaReporteContent() {
             <div className="space-y-6">
               <PeriodoRuta titulo="Primeros 30 días" acento="#c9a84c" acciones={content.hoja_de_ruta?.dias_30} />
               <div className="border-t border-zenit-amber/10" />
-              <PeriodoRuta titulo="Próximos 90 días" acento="#8ec48e" acciones={content.hoja_de_ruta?.dias_90} />
+              <PeriodoRuta titulo="Próximos 90 días" acento="#e8c97a" acciones={content.hoja_de_ruta?.dias_90} />
               <div className="border-t border-zenit-amber/10" />
-              <PeriodoRuta titulo="A 180 días" acento="#90aed4" acciones={content.hoja_de_ruta?.dias_180} />
+              <PeriodoRuta titulo="A 180 días" acento="#f5f0e8" acciones={content.hoja_de_ruta?.dias_180} />
             </div>
           </SeccionReporte>
 
@@ -401,7 +432,7 @@ function PaginaReporteContent() {
                 Comparte Zenit y gana $10.000 COP por cada persona que pague.
               </p>
               <a href={`/afiliados/unirse?session_id=${session_id}`}
-                className="inline-block px-6 py-3 rounded-xl text-zenit-navy font-semibold text-sm bg-zenit-amber">
+                className="inline-block px-6 py-3 rounded-full text-zenit-navy font-semibold text-sm bg-zenit-amber">
                 Quiero mi link de afiliado →
               </a>
             </div>
@@ -418,7 +449,7 @@ function SeccionReporte({ id, numero, titulo, children }) {
     <section id={id} data-seccion={numero} className="rounded-2xl overflow-hidden border border-zenit-navy-mid">
       <div className="px-5 py-4 flex items-center gap-4 bg-zenit-navy-mid">
         <span className="font-serif text-zenit-amber/40 text-sm w-5 flex-shrink-0">{numero}.</span>
-        <h2 className="font-semibold text-sm text-zenit-cream/80">{titulo}</h2>
+        <h2 className="font-serif text-base text-zenit-cream">{titulo}</h2>
       </div>
       <div className="px-5 py-5 bg-zenit-navy">{children}</div>
     </section>

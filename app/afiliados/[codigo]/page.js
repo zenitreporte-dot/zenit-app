@@ -2,13 +2,13 @@
 export const dynamic = 'force-dynamic'
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ZenitLogo } from '@/components/LogoZenit'
+import { ZenitIcon } from '@/components/LogoZenit'
 
 const METODOS_PAGO = [
   { value: 'nequi', label: 'Nequi', placeholder: '3XX XXX XXXX' },
+  { value: 'breb', label: 'Bre-B', placeholder: 'Tu llave Bre-B (celular, cédula o email)' },
   { value: 'daviplata', label: 'Daviplata', placeholder: '3XX XXX XXXX' },
   { value: 'bancolombia', label: 'Bancolombia', placeholder: 'Número de cuenta' },
-  { value: 'otro', label: 'Otro banco', placeholder: 'Banco + Número de cuenta + Tipo' },
 ]
 
 export default function PanelAfiliado() {
@@ -23,6 +23,10 @@ export default function PanelAfiliado() {
   const [modalRetiro, setModalRetiro] = useState(false)
   const [metodo, setMetodo] = useState('nequi')
   const [datosPago, setDatosPago] = useState('')
+  const [tipoCuenta, setTipoCuenta] = useState('ahorros')
+  const [nombreRetiro, setNombreRetiro] = useState('')
+  const [cedulaRetiro, setCedulaRetiro] = useState('')
+  const [emailRetiro, setEmailRetiro] = useState('')
   const [enviandoRetiro, setEnviandoRetiro] = useState(false)
   const [errorRetiro, setErrorRetiro] = useState('')
   const [exitoRetiro, setExitoRetiro] = useState(false)
@@ -68,14 +72,19 @@ export default function PanelAfiliado() {
 
   async function solicitarRetiro(e) {
     e.preventDefault()
-    if (!datosPago.trim()) { setErrorRetiro('Ingresa tu número o cuenta'); return }
+    if (!nombreRetiro.trim()) { setErrorRetiro('Ingresa tu nombre completo'); return }
+    if (!cedulaRetiro.trim()) { setErrorRetiro('Ingresa tu número de cédula'); return }
+    if (!emailRetiro.trim()) { setErrorRetiro('Ingresa tu correo para el comprobante'); return }
+    if (!datosPago.trim()) { setErrorRetiro('Ingresa tu número o cuenta de pago'); return }
     setEnviandoRetiro(true)
     setErrorRetiro('')
+    const tipoCuentaInfo = metodo === 'bancolombia' ? ` | Tipo: ${tipoCuenta}` : ''
+    const datosPagoCompleto = `${datosPago.trim()}${tipoCuentaInfo} | Nombre: ${nombreRetiro.trim()} | Cédula: ${cedulaRetiro.trim()} | Email: ${emailRetiro.trim()}`
     try {
       const res = await fetch('/api/afiliados/retiro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo: codigoUpper, metodo, datos_pago: datosPago.trim() }),
+        body: JSON.stringify({ codigo: codigoUpper, metodo, datos_pago: datosPagoCompleto }),
       })
       const result = await res.json()
       if (result.error) { setErrorRetiro(result.error); return }
@@ -131,7 +140,7 @@ export default function PanelAfiliado() {
           <h1 className="font-serif text-xl text-zenit-cream mb-2">Código no encontrado</h1>
           <p className="text-zenit-cream/50 text-sm mb-6">El código <strong className="text-zenit-cream">{codigoUpper}</strong> no existe en nuestro sistema.</p>
           <a href="/afiliados/unirse"
-            className="inline-block px-6 py-3 rounded-2xl text-zenit-navy font-bold text-sm bg-zenit-amber">
+            className="inline-block px-6 py-3 rounded-full text-zenit-navy font-bold text-sm bg-zenit-amber">
             Unirse al programa
           </a>
         </div>
@@ -148,8 +157,9 @@ export default function PanelAfiliado() {
 
         {/* Header */}
         <div className="text-center mb-2">
-          <div className="flex justify-center mb-3">
-            <ZenitLogo size={22} className="text-zenit-amber" />
+          <div className="flex justify-center items-center gap-2 mb-3">
+            <ZenitIcon size={28} />
+            <span className="font-sans font-bold text-xl tracking-wide text-zenit-amber">zenit</span>
           </div>
           <p className="text-sm font-semibold text-zenit-amber/70">Programa de Afiliados</p>
           <h1 className="font-serif text-2xl text-zenit-cream mt-1">
@@ -167,7 +177,7 @@ export default function PanelAfiliado() {
           <div className="flex gap-2">
             <button
               onClick={copiarLink}
-              className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all"
+              className="flex-1 py-2.5 rounded-full font-semibold text-sm transition-all"
               style={{
                 backgroundColor: copiado ? '#34D399' : '#c9a84c',
                 color: '#1a1b2e'
@@ -178,7 +188,7 @@ export default function PanelAfiliado() {
               href={`https://wa.me/?text=${encodeURIComponent(`Descubre tu propósito de vida con Zenit\n${linkAfiliado}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 rounded-xl font-semibold text-sm border-2 text-zenit-amber"
+              className="px-4 py-2.5 rounded-full font-semibold text-sm border-2 text-zenit-amber"
               style={{ borderColor: '#c9a84c' }}>
               WhatsApp
             </a>
@@ -211,7 +221,7 @@ export default function PanelAfiliado() {
             <span className="font-serif text-xl text-zenit-amber">{formatCOP(stats.disponible)}</span>
           </div>
 
-          {stats.disponible >= 10000 ? (
+          {stats.disponible >= 50000 ? (
             tieneRetiroPendiente ? (
               <div className="p-3 bg-amber-900/20 border border-amber-500/30 rounded-xl text-amber-400 text-sm text-center">
                 ⏳ Tienes una solicitud de retiro en revisión
@@ -219,13 +229,13 @@ export default function PanelAfiliado() {
             ) : (
               <button
                 onClick={() => { setModalRetiro(true); setExitoRetiro(false); setErrorRetiro('') }}
-                className="w-full py-3 rounded-2xl text-zenit-navy font-bold bg-zenit-amber">
+                className="w-full py-3 rounded-full text-zenit-navy font-bold bg-zenit-amber">
                 Solicitar retiro
               </button>
             )
           ) : (
             <div className="p-3 bg-zenit-navy border border-zenit-navy-mid rounded-xl text-zenit-cream/40 text-sm text-center">
-              Mínimo $10.000 COP para retirar
+              Mínimo $50.000 COP para retirar (5 ventas)
               {stats.ganado > 0 && stats.disponible === 0 && ' · Retiro en proceso'}
             </div>
           )}
@@ -256,7 +266,7 @@ export default function PanelAfiliado() {
             {[
               { paso: '1', texto: 'Comparte tu link único con amigos, familia o redes sociales' },
               { paso: '2', texto: 'Cuando alguien paga su reporte usando tu link, ganas $10.000 COP' },
-              { paso: '3', texto: 'Acumula y solicita tu retiro cuando tengas mínimo $10.000 COP disponibles' },
+              { paso: '3', texto: 'Acumula y solicita tu retiro cuando tengas mínimo $50.000 COP (5 ventas)' },
             ].map(p => (
               <div key={p.paso} className="flex gap-3 items-start">
                 <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-zenit-navy mt-0.5 bg-zenit-amber">
@@ -287,7 +297,7 @@ export default function PanelAfiliado() {
                 <h2 className="font-serif text-xl text-zenit-cream mb-2">¡Solicitud enviada!</h2>
                 <p className="text-zenit-cream/50 text-sm mb-6">Revisaremos tu solicitud y te transferiremos en 1-3 días hábiles.</p>
                 <button onClick={() => setModalRetiro(false)}
-                  className="w-full py-3 rounded-2xl text-zenit-navy font-bold bg-zenit-amber">
+                  className="w-full py-3 rounded-full text-zenit-navy font-bold bg-zenit-amber">
                   Cerrar
                 </button>
               </div>
@@ -304,6 +314,36 @@ export default function PanelAfiliado() {
                 </div>
 
                 <form onSubmit={solicitarRetiro} className="space-y-4">
+
+                  {/* Datos personales */}
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={nombreRetiro}
+                      onChange={e => setNombreRetiro(e.target.value)}
+                      placeholder="Nombre completo"
+                      className="w-full border-2 border-zenit-navy rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-zenit-amber bg-zenit-navy text-zenit-cream placeholder-zenit-cream/30"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={cedulaRetiro}
+                      onChange={e => setCedulaRetiro(e.target.value)}
+                      placeholder="Número de cédula"
+                      className="w-full border-2 border-zenit-navy rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-zenit-amber bg-zenit-navy text-zenit-cream placeholder-zenit-cream/30"
+                      required
+                    />
+                    <input
+                      type="email"
+                      value={emailRetiro}
+                      onChange={e => setEmailRetiro(e.target.value)}
+                      placeholder="Correo para el comprobante"
+                      className="w-full border-2 border-zenit-navy rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-zenit-amber bg-zenit-navy text-zenit-cream placeholder-zenit-cream/30"
+                      required
+                    />
+                  </div>
+
+                  {/* Método de pago */}
                   <div>
                     <label className="text-sm font-semibold text-zenit-cream/60 block mb-2">Método de pago</label>
                     <div className="grid grid-cols-2 gap-2">
@@ -312,7 +352,7 @@ export default function PanelAfiliado() {
                           key={m.value}
                           type="button"
                           onClick={() => setMetodo(m.value)}
-                          className="py-2 px-3 rounded-xl text-sm font-semibold border-2 transition-all"
+                          className="py-2 px-3 rounded-full text-sm font-semibold border-2 transition-all"
                           style={{
                             borderColor: metodo === m.value ? '#c9a84c' : '#2d2e4a',
                             color: metodo === m.value ? '#c9a84c' : 'rgba(245,240,232,0.4)',
@@ -324,10 +364,7 @@ export default function PanelAfiliado() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="text-sm font-semibold text-zenit-cream/60 block mb-1">
-                      {METODOS_PAGO.find(m => m.value === metodo)?.label.split(' ').slice(1).join(' ')} — datos de pago
-                    </label>
+                  <div className="space-y-2">
                     <input
                       type="text"
                       value={datosPago}
@@ -336,6 +373,24 @@ export default function PanelAfiliado() {
                       className="w-full border-2 border-zenit-navy rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-zenit-amber bg-zenit-navy text-zenit-cream placeholder-zenit-cream/30"
                       required
                     />
+                    {metodo === 'bancolombia' && (
+                      <div className="grid grid-cols-2 gap-2">
+                        {['ahorros', 'corriente'].map(tipo => (
+                          <button
+                            key={tipo}
+                            type="button"
+                            onClick={() => setTipoCuenta(tipo)}
+                            className="py-2 px-3 rounded-full text-sm font-semibold border-2 transition-all capitalize"
+                            style={{
+                              borderColor: tipoCuenta === tipo ? '#c9a84c' : '#2d2e4a',
+                              color: tipoCuenta === tipo ? '#c9a84c' : 'rgba(245,240,232,0.4)',
+                              backgroundColor: tipoCuenta === tipo ? 'rgba(201,168,76,0.1)' : 'transparent',
+                            }}>
+                            {tipo}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {errorRetiro && (
@@ -345,7 +400,7 @@ export default function PanelAfiliado() {
                   <button
                     type="submit"
                     disabled={enviandoRetiro}
-                    className="w-full py-3 rounded-2xl text-zenit-navy font-bold disabled:opacity-60 bg-zenit-amber">
+                    className="w-full py-3 rounded-full text-zenit-navy font-bold disabled:opacity-60 bg-zenit-amber">
                     {enviandoRetiro ? 'Enviando solicitud...' : `Solicitar ${formatCOP(stats.disponible)}`}
                   </button>
                 </form>

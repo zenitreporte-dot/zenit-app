@@ -6,13 +6,13 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET
+const ADMIN_SECRET = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_SECRET
 
 export async function POST(request) {
   try {
     const { secret, retiro_id, accion } = await request.json()
 
-    if (secret !== ADMIN_SECRET) {
+    if (!ADMIN_SECRET || secret !== ADMIN_SECRET) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 

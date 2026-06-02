@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { SECCIONES, TODAS_LAS_PREGUNTAS } from '@/lib/preguntas'
-import { ZenitIcon } from '@/components/LogoZenit'
+import { ZenitLogo } from '@/components/LogoZenit'
 
 function generarToken() {
   return 'sk_' + Math.random().toString(36).substring(2) + Date.now().toString(36)
@@ -27,8 +27,8 @@ function PantallaBienvenida({ onEmpezar }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 bg-zenit-navy">
       <div className="max-w-lg w-full text-center">
-        <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center bg-zenit-navy-mid border border-zenit-amber/30">
-          <ZenitIcon size={28} className="text-zenit-amber" />
+        <div className="flex justify-center mb-5">
+          <ZenitLogo size={40} />
         </div>
         <h1 className="font-serif text-3xl text-zenit-cream mb-2">
           Conócete en 20 minutos
@@ -44,7 +44,7 @@ function PantallaBienvenida({ onEmpezar }) {
             { num: '03', nombre: 'Por lo que te Pagan', color: '#8ec48e' },
             { num: '04', nombre: 'Lo que el Mundo Necesita', color: '#c9a84c' },
           ].map((s, i) => (
-            <div key={i} className="rounded-xl p-3 flex items-center gap-3 bg-zenit-navy-mid border border-white/5">
+            <div key={i} className="rounded-xl p-3 flex items-center gap-3 bg-zenit-navy-mid border border-zenit-amber/10">
               <span className="font-serif text-sm opacity-40" style={{ color: s.color }}>{s.num}</span>
               <span className="text-xs font-medium text-zenit-cream/60">{s.nombre}</span>
             </div>
@@ -67,7 +67,7 @@ function PantallaBienvenida({ onEmpezar }) {
 
         <button
           onClick={onEmpezar}
-          className="w-full py-4 rounded-2xl text-zenit-navy font-bold text-lg shadow-md transition-all hover:opacity-90 bg-zenit-amber"
+          className="w-full py-4 rounded-full text-zenit-navy font-bold text-lg shadow-md transition-all hover:opacity-90 bg-zenit-amber"
         >
           Comenzar →
         </button>
@@ -148,8 +148,8 @@ export default function Formulario() {
       setError('Escribe tu respuesta antes de continuar.')
       return
     }
-    if (respuestaActual.trim().length < 50) {
-      setError('Necesitamos un poco más de detalle. Escribe 2-3 oraciones para un análisis personalizado.')
+    if (respuestaActual.trim().length < 30) {
+      setError('Agrega un poco más de detalle para que la IA pueda hacer un análisis personalizado.')
       return
     }
     setError(null)
@@ -263,16 +263,16 @@ export default function Formulario() {
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu respuesta aquí..."
               rows={4}
-              className="w-full rounded-2xl p-4 text-gray-800 placeholder-gray-400 resize-none outline-none text-base shadow-sm"
+              className="w-full rounded-2xl p-4 text-zenit-navy placeholder-zenit-navy/40 resize-none outline-none text-base shadow-sm"
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                backgroundColor: 'rgba(245, 240, 232, 0.92)',
                 border: error ? '2px solid #ef4444' : '2px solid transparent',
               }}
               autoFocus
             />
             <div className="flex justify-between mt-1.5 px-1">
               <span className="text-xs opacity-50" style={{ color: seccion.colorTexto }}>
-                {respuestaActual.length < 50 ? 'Escribe 2-3 oraciones para un análisis personalizado' : '✓ Buena respuesta'}
+                {respuestaActual.length < 30 ? 'Agrega un poco más de detalle para un análisis personalizado' : '✓ Buena respuesta'}
               </span>
             </div>
           </div>
@@ -286,14 +286,12 @@ export default function Formulario() {
         <div className="max-w-2xl mx-auto flex gap-3">
           {preguntaActual > 0 && (
             <button onClick={handleAnterior}
-              className="flex-shrink-0 px-5 py-4 rounded-2xl font-semibold transition-all hover:opacity-80"
-              style={{ backgroundColor: 'rgba(255,255,255,0.5)', color: seccion.colorTexto }}>
+              className="flex-shrink-0 px-5 py-4 rounded-full font-semibold transition-all hover:opacity-80 bg-white/20 text-zenit-cream border border-white/30">
               ← Atrás
             </button>
           )}
           <button onClick={handleSiguiente} disabled={guardando}
-            className="flex-1 py-4 rounded-2xl font-bold text-lg text-white transition-all hover:opacity-90 disabled:opacity-60 shadow-md"
-            style={{ backgroundColor: seccion.colorBoton }}>
+            className="flex-1 py-4 rounded-full font-bold text-lg text-zenit-navy transition-all hover:opacity-90 disabled:opacity-60 shadow-md bg-zenit-amber">
             {guardando ? 'Guardando...' : preguntaActual === totalPreguntas - 1 ? '¡Ver mi reporte! →' : 'Siguiente →'}
           </button>
         </div>

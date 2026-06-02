@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ZenitIcon } from '@/components/LogoZenit'
+import { ZenitLogo } from '@/components/LogoZenit'
 
 export default function LoginAfiliado() {
   const router = useRouter()
@@ -34,8 +34,8 @@ export default function LoginAfiliado() {
     <div className="min-h-screen flex items-center justify-center px-6 bg-zenit-navy">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-full bg-zenit-navy-mid border border-zenit-amber/20 flex items-center justify-center mx-auto mb-5">
-            <ZenitIcon size={26} className="text-zenit-amber" />
+          <div className="flex justify-center mb-5">
+            <ZenitLogo size={36} />
           </div>
           <h1 className="font-serif text-2xl text-zenit-cream mb-1">Accede a tu panel</h1>
           <p className="text-zenit-cream/40 text-sm">Programa de Afiliados · Zenit</p>
@@ -72,7 +72,7 @@ export default function LoginAfiliado() {
           <button
             type="submit"
             disabled={cargando}
-            className="w-full py-3.5 rounded-2xl text-zenit-navy font-bold text-sm disabled:opacity-60 bg-zenit-amber">
+            className="w-full py-3.5 rounded-full text-zenit-navy font-bold text-sm disabled:opacity-60 bg-zenit-amber">
             {cargando ? 'Entrando...' : 'Entrar a mi panel →'}
           </button>
         </form>

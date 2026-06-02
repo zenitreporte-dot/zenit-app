@@ -1,5 +1,5 @@
 'use client'
-import { ZenitIcon } from '@/components/LogoZenit'
+import { ZenitLogo } from '@/components/LogoZenit'
 import { useRouter } from 'next/navigation'
 
 export default function ProgramaInfluencer() {
@@ -10,9 +10,8 @@ export default function ProgramaInfluencer() {
 
       {/* Header */}
       <header className="px-6 py-5 flex items-center justify-between border-b border-zenit-navy-mid">
-        <div className="flex items-center gap-2">
-          <ZenitIcon size={22} className="text-zenit-amber" />
-          <span className="font-serif text-lg text-zenit-cream">Zenit</span>
+        <div className="flex items-center">
+          <ZenitLogo size={32} />
         </div>
         <a href="/afiliados/login" className="text-xs text-zenit-cream/40 hover:text-zenit-amber transition-colors">
           Ya tengo cuenta →

@@ -3,6 +3,8 @@
 // POST /api/reporte/generar
 // FLUJO: Verificar sesión → Filtro de seguridad → Generar reporte
 // ============================================================
+export const maxDuration = 60
+
 import { createServerClient } from '@/lib/supabase'
 import { generarReporteIA } from '@/lib/generarReporte'
 import { analizarSeguridad, CATEGORIAS } from '@/lib/filtroSeguridad'
