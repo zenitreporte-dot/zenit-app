@@ -8,6 +8,7 @@ export default function PantallaDePago() {
   const router = useRouter()
   const [sessionToken, setSessionToken] = useState(null)
   const [sessionId, setSessionId] = useState(null)
+  const [nombre, setNombre] = useState('')
   const [cargandoPago, setCargandoPago] = useState(false)
   const [cargandoPrueba, setCargandoPrueba] = useState(false)
   const [error, setError] = useState(null)
@@ -36,9 +37,19 @@ export default function PantallaDePago() {
 
   async function handlePagar() {
     if (!sessionToken) return
+    if (!nombre.trim()) { setError('Por favor ingresa tu nombre antes de continuar'); return }
     setCargandoPago(true)
     setError(null)
+    // Guardar nombre en sessionStorage y en la sesión
+    sessionStorage.setItem('ikigai_nombre', nombre.trim())
     try {
+      // Guardar nombre en la sesión de Supabase via API
+      await fetch('/api/formulario/sesion', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_token: sessionToken, nombre: nombre.trim() }),
+      }).catch(() => {})
+
       const res = await fetch('/api/pago/crear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -164,6 +175,16 @@ export default function PantallaDePago() {
               <span className="text-zenit-cream/40 ml-2">COP</span>
             </div>
             <p className="text-zenit-cream/40 text-sm mb-6">Pago único · Descarga inmediata en PDF · Tuyo para siempre</p>
+
+            {/* Campo nombre */}
+            <input
+              type="text"
+              value={nombre}
+              onChange={e => setNombre(e.target.value)}
+              placeholder="¿Cómo te llamas?"
+              className="w-full border-2 border-zenit-navy-mid rounded-2xl px-5 py-4 text-base mb-4 focus:outline-none focus:border-zenit-amber bg-zenit-navy-mid text-zenit-cream placeholder-zenit-cream/30 text-center"
+              maxLength={50}
+            />
 
             {error && (
               <div className="mb-4 p-4 bg-red-950/40 border border-red-500/30 rounded-xl text-red-400 text-sm">

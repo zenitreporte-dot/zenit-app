@@ -7,6 +7,7 @@
 import { NextResponse } from 'next/server'
 import { MercadoPagoConfig, Payment } from 'mercadopago'
 import { createServerClient } from '@/lib/supabase'
+import { notificarNuevaVenta, enviarNotificacionVenta, enviarConfirmacionCompra } from '@/lib/emails'
 
 
 export async function POST(request) {
@@ -108,14 +109,30 @@ export async function POST(request) {
       }
     }
 
-    // Llamar al generador de reportes en segundo plano
-    // Usamos fetch sin await para no bloquear la respuesta al webhook
-    const baseUrl = process.env.NEXT_PUBLIC_URL
-    fetch(`${baseUrl}/api/reporte/generar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId }),
-    }).catch(e => console.error('Error iniciando generación de reporte:', e))
+    // Notificaciones (sin await para no bloquear)
+    notificarNuevaVenta({ sessionId, referidoPor: sesion.referred_by }).catch(() => {})
+
+    // Email de confirmación al comprador si tiene email registrado
+    const nombreComprador = sesion.answers?._nombre || null
+    if (pago.payer?.email) {
+      enviarConfirmacionCompra({ email: pago.payer.email, sessionId, nombre: nombreComprador }).catch(() => {})
+    }
+
+    // Notificación al afiliado si la venta vino referida
+    if (sesion.referred_by) {
+      const { data: afiliado } = await supabase
+        .from('affiliate_codes')
+        .select('nombre, email')
+        .eq('codigo', sesion.referred_by)
+        .single()
+      if (afiliado?.email) {
+        enviarNotificacionVenta({
+          nombre: afiliado.nombre,
+          email: afiliado.email,
+          codigo: sesion.referred_by,
+        }).catch(() => {})
+      }
+    }
 
     // Responder rápido a Mercado Pago para que no reintente
     return NextResponse.json({ ok: true, msg: 'Pago procesado correctamente' })

@@ -77,6 +77,7 @@ function PaginaReporteContent() {
   const [cargando, setCargando] = useState(true)
   const [generando, setGenerando] = useState(searchParams.get('generando') === 'true')
   const [error, setError] = useState(null)
+  const [nombre, setNombre] = useState('')
   const [seccionActiva, setSeccionActiva] = useState(1)
 
   useEffect(() => {
@@ -105,6 +106,9 @@ function PaginaReporteContent() {
       setReporte(data)
       setGenerando(false)
       setCargando(false)
+      // Extraer nombre si está en sessionStorage o en las respuestas
+      const nombreGuardado = sessionStorage.getItem('ikigai_nombre')
+      if (nombreGuardado) setNombre(nombreGuardado.split(' ')[0])
       return true
     }
 
@@ -254,6 +258,11 @@ function PaginaReporteContent() {
           <div id="seccion-1" data-seccion="1" className="rounded-3xl overflow-hidden border border-zenit-amber/20"
             style={{ background: 'linear-gradient(135deg, #1a1b2e 0%, #2d2e4a 100%)' }}>
             <div className="p-8 sm:p-10">
+              {nombre && (
+                <p className="text-zenit-cream/40 text-sm mb-4">
+                  Hola {nombre}, aquí está tu análisis
+                </p>
+              )}
               <p className="text-zenit-amber/60 text-xs font-semibold tracking-widest uppercase mb-3">
                 Tu arquetipo
               </p>

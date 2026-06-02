@@ -7,6 +7,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { cookies } from 'next/headers'
+import { notificarNuevoRetiro, enviarConfirmacionRetiro, enviarAlertaRetiroAdmin } from '@/lib/emails'
 
 export const dynamic = 'force-dynamic'
 
@@ -103,7 +104,15 @@ export async function POST(request) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Notificaciones manejadas por Make (webhook automático en Supabase)
+    // Notificaciones (sin await para no bloquear la respuesta)
+    const nombreAfiliado = afiliadoData?.nombre || codigo
+    const emailAfiliado = afiliadoData?.email
+
+    notificarNuevoRetiro({ nombre: nombreAfiliado, codigo, monto: disponible, metodo, datosPago: datos_pago }).catch(() => {})
+    if (emailAfiliado) {
+      enviarConfirmacionRetiro({ nombre: nombreAfiliado, email: emailAfiliado, codigo, monto: disponible }).catch(() => {})
+      enviarAlertaRetiroAdmin({ nombre: nombreAfiliado, email: emailAfiliado, codigo, monto: disponible, metodo, datos_pago }).catch(() => {})
+    }
 
     return NextResponse.json({ ok: true, monto: disponible })
   } catch (error) {

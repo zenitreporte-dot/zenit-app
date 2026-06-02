@@ -5,6 +5,30 @@
 import { createServerClient } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
+export async function PATCH(request) {
+  try {
+    const body = await request.json()
+    const { session_token, nombre } = body
+    if (!session_token || !nombre) {
+      return NextResponse.json({ error: 'session_token y nombre requeridos' }, { status: 400 })
+    }
+    const supabase = createServerClient()
+    const { data: sesion } = await supabase
+      .from('form_sessions')
+      .select('id, answers')
+      .eq('session_token', session_token)
+      .single()
+    if (!sesion) return NextResponse.json({ error: 'Sesión no encontrada' }, { status: 404 })
+    await supabase
+      .from('form_sessions')
+      .update({ answers: { ...sesion.answers, _nombre: nombre } })
+      .eq('session_token', session_token)
+    return NextResponse.json({ ok: true })
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
 export async function POST(request) {
   try {
     const body = await request.json()
