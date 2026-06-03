@@ -177,6 +177,8 @@ export default function Formulario() {
         setAnimando(false)
       }
     }, 300)
+    // Seguro: desbloquear botón después de 800ms por si algo falla
+    setTimeout(() => setAnimando(false), 800)
   }
 
   function handleAnterior() {
