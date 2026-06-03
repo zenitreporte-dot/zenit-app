@@ -9,6 +9,7 @@ export default function PantallaDePago() {
   const [sessionToken, setSessionToken] = useState(null)
   const [sessionId, setSessionId] = useState(null)
   const [nombre, setNombre] = useState('')
+  const [email, setEmail] = useState('')
   const [cargandoPago, setCargandoPago] = useState(false)
   const [cargandoPrueba, setCargandoPrueba] = useState(false)
   const [error, setError] = useState(null)
@@ -38,16 +39,16 @@ export default function PantallaDePago() {
   async function handlePagar() {
     if (!sessionToken) return
     if (!nombre.trim()) { setError('Por favor ingresa tu nombre antes de continuar'); return }
+    if (!email.trim() || !email.includes('@')) { setError('Por favor ingresa un email válido'); return }
     setCargandoPago(true)
     setError(null)
-    // Guardar nombre en sessionStorage y en la sesión
     sessionStorage.setItem('ikigai_nombre', nombre.trim())
+    sessionStorage.setItem('ikigai_email', email.trim())
     try {
-      // Guardar nombre en la sesión de Supabase via API
       await fetch('/api/formulario/sesion', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_token: sessionToken, nombre: nombre.trim() }),
+        body: JSON.stringify({ session_token: sessionToken, nombre: nombre.trim(), email: email.trim() }),
       }).catch(() => {})
 
       const res = await fetch('/api/pago/crear', {
@@ -175,8 +176,16 @@ export default function PantallaDePago() {
               value={nombre}
               onChange={e => setNombre(e.target.value)}
               placeholder="¿Cómo te llamas?"
-              className="w-full border-2 border-zenit-navy-mid rounded-2xl px-5 py-4 text-base mb-4 focus:outline-none focus:border-zenit-amber bg-zenit-navy-mid text-zenit-cream placeholder-zenit-cream/30 text-center"
+              className="w-full border-2 border-zenit-navy-mid rounded-2xl px-5 py-4 text-base mb-3 focus:outline-none focus:border-zenit-amber bg-zenit-navy-mid text-zenit-cream placeholder-zenit-cream/30 text-center"
               maxLength={50}
+            />
+            {/* Campo email */}
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Tu email (para enviarte el link del reporte)"
+              className="w-full border-2 border-zenit-navy-mid rounded-2xl px-5 py-4 text-base mb-4 focus:outline-none focus:border-zenit-amber bg-zenit-navy-mid text-zenit-cream placeholder-zenit-cream/30 text-center"
             />
 
             {error && (

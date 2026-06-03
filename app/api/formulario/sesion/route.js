@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server'
 export async function PATCH(request) {
   try {
     const body = await request.json()
-    const { session_token, nombre } = body
+    const { session_token, nombre, email } = body
     if (!session_token || !nombre) {
       return NextResponse.json({ error: 'session_token y nombre requeridos' }, { status: 400 })
     }
@@ -19,9 +19,11 @@ export async function PATCH(request) {
       .eq('session_token', session_token)
       .single()
     if (!sesion) return NextResponse.json({ error: 'Sesión no encontrada' }, { status: 404 })
+    const updateData = { answers: { ...sesion.answers, _nombre: nombre } }
+    if (email) updateData.buyer_email = email
     await supabase
       .from('form_sessions')
-      .update({ answers: { ...sesion.answers, _nombre: nombre } })
+      .update(updateData)
       .eq('session_token', session_token)
     return NextResponse.json({ ok: true })
   } catch (error) {

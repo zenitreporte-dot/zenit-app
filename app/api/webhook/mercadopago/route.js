@@ -112,10 +112,11 @@ export async function POST(request) {
     // Notificaciones (sin await para no bloquear)
     notificarNuevaVenta({ sessionId, referidoPor: sesion.referred_by }).catch(() => {})
 
-    // Email de confirmación al comprador si tiene email registrado
+    // Email de confirmación al comprador
     const nombreComprador = sesion.answers?._nombre || null
-    if (pago.payer?.email) {
-      enviarConfirmacionCompra({ email: pago.payer.email, sessionId, nombre: nombreComprador }).catch(() => {})
+    const emailComprador = pago.payer?.email || sesion.buyer_email || null
+    if (emailComprador) {
+      enviarConfirmacionCompra({ email: emailComprador, sessionId, nombre: nombreComprador }).catch(() => {})
     }
 
     // Notificación al afiliado si la venta vino referida
