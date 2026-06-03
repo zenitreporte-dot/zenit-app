@@ -77,10 +77,15 @@ export default function LoginAfiliado() {
           </button>
         </form>
 
-        <p className="text-center mt-6 text-zenit-cream/30 text-xs">
-          ¿No tienes cuenta?{' '}
-          <a href="/afiliados/unirse" className="text-zenit-amber hover:underline">Únete al programa</a>
-        </p>
+        <div className="text-center mt-6 space-y-2">
+          <p className="text-zenit-cream/30 text-xs">
+            <a href="/afiliados/recuperar" className="text-zenit-amber/60 hover:text-zenit-amber hover:underline">¿Olvidaste tu contraseña?</a>
+          </p>
+          <p className="text-zenit-cream/30 text-xs">
+            ¿No tienes cuenta?{' '}
+            <a href="/afiliados/unirse" className="text-zenit-amber hover:underline">Únete al programa</a>
+          </p>
+        </div>
       </div>
     </div>
   )
