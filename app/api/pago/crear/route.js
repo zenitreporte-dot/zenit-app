@@ -42,7 +42,7 @@ export async function POST(request) {
     })
 
     const preference = new Preference(client)
-    const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_URL || 'https://zenit-app-alpha.vercel.app'
+    const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_URL || 'https://zenitcol.com'
 
     // Crear la preferencia de pago en Mercado Pago
     const response = await preference.create({
