@@ -17,10 +17,35 @@ const dmSans = DM_Sans({
 export const metadata = {
   title: 'Zenit — Descubre tu propósito de vida en 20 minutos',
   description: 'Responde 20 preguntas. La IA analiza todo y te entrega un reporte 100% tuyo con tu propósito de vida, tus fortalezas reales y una hoja de ruta a 180 días. Solo $25.000 COP.',
+  metadataBase: new URL('https://zenitcol.com'),
+  alternates: {
+    canonical: 'https://zenitcol.com',
+  },
   openGraph: {
-    title: 'Zenit — Conócete en 20 minutos.',
-    description: 'Reporte de propósito de vida con IA · $25.000 COP',
+    title: 'Zenit — Descubre tu propósito de vida en 20 minutos',
+    description: 'Responde 20 preguntas. La IA analiza todo y te entrega un reporte 100% tuyo con tu propósito de vida, tus fortalezas reales y una hoja de ruta a 180 días. Solo $25.000 COP.',
     type: 'website',
+    url: 'https://zenitcol.com',
+    siteName: 'Zenit',
+    images: [
+      {
+        url: '/og-image',
+        width: 1200,
+        height: 630,
+        alt: 'Zenit — Reporte de propósito de vida con IA',
+      },
+    ],
+    locale: 'es_CO',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Zenit — Descubre tu propósito de vida en 20 minutos',
+    description: 'Reporte de propósito de vida con IA · $25.000 COP',
+    images: ['/og-image'],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
