@@ -49,9 +49,7 @@ export async function POST(request) {
       body: {
         items: [
           {
-            id: sesion.id,
-            title: 'Reporte IkigAI — Tu propósito de vida con IA',
-            description: '8 secciones de análisis profundo de propósito de vida basado en metodología Ikigai',
+            title: 'Reporte Zenit — Tu propósito de vida con IA',
             quantity: 1,
             unit_price: PRECIO_COP,
             currency_id: 'COP',
