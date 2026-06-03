@@ -68,9 +68,6 @@ export async function POST(request) {
         notification_url: `${baseUrl}/api/webhook/mercadopago`,
         // Referencia externa para identificar este pago en nuestro sistema
         external_reference: sesion.id,
-        // Expirar la preferencia en 30 minutos si no paga
-        expires: true,
-        expiration_date_to: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
       },
     })
 
