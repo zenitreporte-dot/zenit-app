@@ -63,10 +63,7 @@ export async function POST(request) {
           failure: `${baseUrl}/pago/fallido?session_id=${sesion.id}`,
           pending: `${baseUrl}/pago/pendiente?session_id=${sesion.id}`,
         },
-        auto_return: 'approved', // Redirige automáticamente si el pago es aprobado
-        // URL donde Mercado Pago envía la notificación del pago (el webhook)
-        notification_url: `${baseUrl}/api/webhook/mercadopago`,
-        // Referencia externa para identificar este pago en nuestro sistema
+        auto_return: 'approved',
         external_reference: sesion.id,
       },
     })
